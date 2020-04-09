@@ -14,7 +14,7 @@ namespace SampleApp
         [Get("/helloworld")]
         public ActionResult HelloWorld(HimeContext ctx)
         {
-            ctx.Headers.AddHeader("X-HelloWorld", "Hi!");
+            ctx.ResponseHeaders.AddHeader("X-HelloWorld", "Hi!");
             return Ok("<form action=\"/helloworld\" method=POST><input type=\"submit\"></form>");
         }
 
@@ -31,6 +31,18 @@ namespace SampleApp
         public ActionResult Nothing(HimeContext ctx)
         {
             return NoContent();
+        }
+
+        [Get("/headers")]
+        public ActionResult HeadersTest(HimeContext ctx)
+        {
+            string tmp = "";
+            foreach (System.Collections.Generic.KeyValuePair<string, string> header in ctx.RequestHeaders.GetHeaders())
+            {
+                tmp += $"<b>{header.Key}</b> - {header.Value}<br>";
+            }
+
+            return Ok(tmp);
         }
 
         [Post("/helloworld")]

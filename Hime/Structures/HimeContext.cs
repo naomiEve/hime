@@ -6,8 +6,11 @@ namespace Hime.Structures
 {
     public class HimeContext
     {
-        public Headers Headers { get; set; }
+        public Headers RequestHeaders { get; set; }
+        public Headers ResponseHeaders { get; set; }
         public UriQuery QueryString { get; set; }
         public CookieCollection Cookies { get; set; }
+        public string[] AcceptTypes { get; set; }
+        public IPEndPoint RemoteAddress { get; set; }
     }
 }

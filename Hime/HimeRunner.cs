@@ -13,17 +13,6 @@ namespace Hime
 {
     public static class HimeRunner
     {
-        internal static Dictionary<string, HttpMethods> nameMethodMap = new Dictionary<string, HttpMethods>()
-        {
-            { "GET", HttpMethods.Get },
-            { "POST", HttpMethods.Post },
-            { "DELETE", HttpMethods.Delete },
-            { "PATCH", HttpMethods.Patch },
-            { "PUT", HttpMethods.Put },
-            { "HEAD", HttpMethods.Head },
-            { "OPTIONS", HttpMethods.Options }
-        };
-
         internal static bool _running = false;
 
         internal static Router _router;
@@ -84,15 +73,20 @@ namespace Hime
 
             HttpListenerRequest  req  = context.Request;
             HttpListenerResponse resp = context.Response;
-            
+
             HimeContext ctx = new HimeContext
             {
-                Headers = new Headers(),
+                RequestHeaders = new Headers(req.Headers),
+                ResponseHeaders = new Headers(),
+
                 QueryString = new UriQuery(req.QueryString),
-                Cookies = req.Cookies
+
+                Cookies = req.Cookies,
+                AcceptTypes = req.AcceptTypes,
+                RemoteAddress = req.RemoteEndPoint
             };
 
-            HttpMethods requestedMethod = nameMethodMap[req.HttpMethod];
+            HttpMethods requestedMethod = Constants.nameMethodMap[req.HttpMethod];
 
             string requestedUrl = req.RawUrl;
 
@@ -108,7 +102,7 @@ namespace Hime
             resp.StatusCode = routeResult.Code;
             resp.ContentType = routeResult.MIME;
 
-            foreach (KeyValuePair<string, string> header in ctx.Headers.GetHeaders())
+            foreach (KeyValuePair<string, string> header in ctx.ResponseHeaders.GetHeaders())
             {
                 resp.AddHeader(header.Key, header.Value);
             }
