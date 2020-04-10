@@ -8,7 +8,7 @@ namespace Hime.Structures
     {
         public int Code { get; set; }
 
-        public string Content { get; set; }
+        public byte[] Content { get; set; }
 
         public string MIME { get; set; }
     }

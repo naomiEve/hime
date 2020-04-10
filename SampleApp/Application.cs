@@ -8,7 +8,7 @@ namespace SampleApp
         [Get("/")]
         public ActionResult Index(HimeContext ctx)
         {
-            return Ok("<h1>Hello!</h1>");
+            return Ok("<img src=\"hime.png\"><br><h1>Hime</h1>");
         }
 
         [Get("/helloworld")]

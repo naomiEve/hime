@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using Hime.Structures;
 using Hime.Application;
 using Hime.Routing;
@@ -16,13 +16,15 @@ namespace Hime
         internal static bool _running = false;
 
         internal static Router _router;
+        internal static StaticFiles _static;
 
         internal static HttpListener _httpListener;
 
         internal static ServerConfig _cfg = new ServerConfig
         {
             IP = IPAddress.Loopback,
-            Port = 12009
+            Port = 12009,
+            StaticFolder = "/static"
         };
 
         /// <summary>
@@ -43,6 +45,10 @@ namespace Hime
             _router = new Router(app);
 
             Console.WriteLine("Route builder complete.");
+            Console.WriteLine($"Setting up the static file server @ {_cfg.StaticFolder}");
+
+            _static = new StaticFiles(_cfg.StaticFolder);
+
             Console.WriteLine("Setting up the server.");
 
             _httpListener = new HttpListener();
@@ -99,6 +105,11 @@ namespace Hime
             RoutingDelegate route = _router.GetRouteFor(requestedUrl, requestedMethod);
             ActionResult routeResult = route(ctx);
 
+            if (routeResult.Code == 404 && _static.Exists(requestedUrl)) // Check if it's a static file
+            {
+                routeResult = _static.GetFile(requestedUrl);
+            }
+
             resp.StatusCode = routeResult.Code;
             resp.ContentType = routeResult.MIME;
 
@@ -107,10 +118,8 @@ namespace Hime
                 resp.AddHeader(header.Key, header.Value);
             }
 
-            var buffer = Encoding.UTF8.GetBytes(routeResult.Content);
-
-            resp.ContentLength64 = buffer.Length;
-            resp.OutputStream.Write(buffer, 0, buffer.Length);
+            resp.ContentLength64 = routeResult.Content.Length;
+            resp.OutputStream.Write(routeResult.Content, 0, routeResult.Content.Length);
 
             Console.WriteLine($"[{DateTime.Now}] {req.HttpMethod} \"{req.RawUrl}\" - {routeResult.Code}");
 

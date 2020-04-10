@@ -8,5 +8,7 @@ namespace Hime.Structures
         public IPAddress IP { get; set; }
 
         public ushort Port { get; set; }
+
+        public string StaticFolder { get; set; }
     }
 }

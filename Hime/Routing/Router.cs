@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Hime.Application;
-using Hime.Structures;
 using Hime.Enums;
 
 namespace Hime.Routing
 {
     public class Router
     {
-        private Buckets routingBuckets = new Buckets();
-
-        public static ActionResult NotFoundResult = new ActionResult
-        {
-            Code = 404,
-            Content = "<h1>Not found.</h1>",
-            MIME = "text/html"
-        };
+        private const string notFoundBody = "<h1>Not Found.</h1>";
+        private readonly Buckets routingBuckets = new Buckets();
 
         internal RoutingDelegate CreateRoutingDelegate(MethodInfo methodInfo, HimeApplication app)
         {
@@ -76,7 +69,7 @@ namespace Hime.Routing
                 return routingDelegate;
             }
 
-            return new RoutingDelegate(ctx => NotFoundResult);
+            return new RoutingDelegate(ctx => HimeApplication.NotFound(notFoundBody));
         }
     }
 }
