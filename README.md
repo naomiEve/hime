@@ -37,7 +37,7 @@ public ActionResult Route(HimeContext ctx)
    return new ActionResult
    {
         Code = 403,
-        Content = "Go away. You weren't supposed to be here."
+        Content = Encoding.UTF8.GetBytes("Go away. You weren't supposed to be here.")
    };
 }
 ```
