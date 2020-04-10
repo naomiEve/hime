@@ -12,5 +12,6 @@ namespace Hime.Structures
         public CookieCollection Cookies { get; set; }
         public string[] AcceptTypes { get; set; }
         public IPEndPoint RemoteAddress { get; set; }
+        public PostData PostData { get; set; }
     }
 }

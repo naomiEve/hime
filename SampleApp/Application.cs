@@ -15,7 +15,7 @@ namespace SampleApp
         public ActionResult HelloWorld(HimeContext ctx)
         {
             ctx.ResponseHeaders.AddHeader("X-HelloWorld", "Hi!");
-            return Ok("<form action=\"/helloworld\" method=POST><input type=\"submit\"></form>");
+            return Ok("<form action=\"/helloworld\" method=POST><input type=\"text\" name=\"name\"><input type=\"submit\"></form>");
         }
 
         [Get("/hello")]
@@ -33,6 +33,12 @@ namespace SampleApp
             return NoContent();
         }
 
+        [Get("/redirect")]
+        public ActionResult Redirection(HimeContext ctx)
+        {
+            return Redirect("/", ctx);
+        }
+
         [Get("/headers")]
         public ActionResult HeadersTest(HimeContext ctx)
         {
@@ -48,7 +54,7 @@ namespace SampleApp
         [Post("/helloworld")]
         public ActionResult HelloWorldPost(HimeContext ctx)
         {
-            return Ok("You've posted!");
+            return Ok($"Hello {ctx.PostData.Get("name")}");
         }
     }
 }

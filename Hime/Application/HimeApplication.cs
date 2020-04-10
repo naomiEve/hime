@@ -52,5 +52,23 @@ namespace Hime.Application
                 MIME = "text/html"
             };
         }
+
+        /// <summary>
+        /// Returns a 303 See Other response. Also attaches the appropriate Location header for redirection.
+        /// </summary>
+        /// <param name="url">The URL to redirect to</param>
+        /// <param name="ctx">The HimeContext passed to the route</param>
+        /// <returns>The response ActionResult</returns>
+        public static ActionResult Redirect(string url, HimeContext ctx)
+        {
+            ctx.ResponseHeaders.AddHeader("Location", url);
+
+            return new ActionResult
+            {
+                Code = 303,
+                Content = Encoding.UTF8.GetBytes($"<a href=\"{url}\">Redirecting</a>"),
+                MIME = "text/html"
+            };
+        }
     }
 }

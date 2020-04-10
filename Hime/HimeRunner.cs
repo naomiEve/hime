@@ -94,6 +94,11 @@ namespace Hime
 
             HttpMethods requestedMethod = Constants.nameMethodMap[req.HttpMethod];
 
+            if (requestedMethod == HttpMethods.Post)
+            {
+                ctx.PostData = new PostData(req.InputStream, req.ContentType);
+            }
+
             string requestedUrl = req.RawUrl;
 
             if (requestedUrl.Contains("?"))
